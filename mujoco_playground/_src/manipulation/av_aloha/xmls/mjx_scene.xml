@@ -31,6 +31,9 @@
     <mesh file="extrusion_600.stl"/>
     <mesh file="overhead_mount.stl"/>
     <mesh file="extrusion_2040_1000.stl"/>
+
+    <!-- 840mm = 1220 - 2*150 - 4*20: shortened extrusion for middle-arm stand. -->
+    <mesh name="extrusion_840" file="extrusion_1220.stl" scale="1 1 0.68852459016"/>
     <mesh file="wormseye_mount.stl"/>
 
     <!-- Table dimensions (length x width x height in meters): 1.21x0.76x0.75 -->
@@ -94,6 +97,12 @@
     <geom class="frame" pos="-0.6 -0.26 0.12" quat="0.923 0.382 0 0" material="metal" mesh="angled_extrusion"/>
     <geom class="frame" pos="0.43 -0.361 1.02" quat="0 0 0 1" mesh="extrusion_2040_1000"/>
     <geom class="frame" pos="0 -0.391 -0.01" quat="0 0 0 1" mesh="wormseye_mount"/>
+
+    <!-- Middle-arm support: two horizontal 840mm extrusions running along X,
+         bracketing the middle base (y = -0.513) front-and-back at the
+         floor-rail level (z = 0.01). Mirrors av-aloha's stock layout. -->
+    <geom class="frame" pos="-0.42 -0.418 0.01" quat="0 1 0 -1" mesh="extrusion_840"/>
+    <geom class="frame" pos="-0.42 -0.60 0.01" quat="0 1 0 -1" mesh="extrusion_840"/>
   </worldbody>
 
   <sensor>
