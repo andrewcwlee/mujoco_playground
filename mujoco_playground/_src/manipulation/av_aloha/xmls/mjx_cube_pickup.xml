@@ -1,0 +1,37 @@
+<mujoco model="av_aloha_cube_pickup">
+  <include file="mjx_scene.xml"/>
+
+  <option iterations="10" ls_iterations="10" timestep="0.005" integrator="implicitfast" impratio="5"/>
+
+  <default>
+    <default class="stiff">
+      <geom solref="0.01 1"/>
+    </default>
+  </default>
+
+  <worldbody>
+    <body name="cube" pos="0 0 0.03">
+      <site name="cube_top" pos="0 0 0.02" group="4"/>
+      <site name="cube_bottom" pos="0 0 -0.02" group="4"/>
+      <joint type="free" stiffness="0" damping="0" frictionloss="0" armature="0"/>
+      <geom class="stiff" mass="0.044" condim="4" friction="1 0.05 0.001"
+            pos="0 0 0" size="0.02 0.02 0.02" type="box" name="cube"
+            rgba="1 0 0 1" contype="1" conaffinity="1"/>
+    </body>
+    <body mocap="true" name="mocap_target" pos="0 0 0.22">
+      <geom type="box" size="0.02 0.02 0.02" rgba="1 0 0 0.2" contype="0" conaffinity="0"/>
+    </body>
+  </worldbody>
+
+  <keyframe>
+    <key name="home"
+         qpos='0.083383 -0.554374 1.23718 0.108587 -0.65136 -0.072894 0.0305 0.0304972
+               0.083383 -0.554374 1.23718 0.108587 -0.65136 -0.072894 0.0305 0.0304972
+               0 -0.5 0.5 0 0 0 0
+               0 0 0.03 1 0 0 0'
+         ctrl='0.083383 -0.554374 1.23718 0.108587 -0.65136 -0.072894 0.037
+               0.083383 -0.554374 1.23718 0.108587 -0.65136 -0.072894 0.037
+               0 -0.5 0.5 0 0 0 0'/>
+  </keyframe>
+
+</mujoco>
