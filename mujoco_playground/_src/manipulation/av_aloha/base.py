@@ -68,7 +68,8 @@ class AvAlohaEnv(mjx_env.MjxEnv):
 
     self._mjx_model = mjx.put_model(self._mj_model, impl=self._config.impl)
     self._xml_path = xml_path
-    self._renderer = None  # Lazily created for active-vision rendering.
+    self._renderer = None  # Lazily created for active-vision RGB rendering.
+    self._depth_renderer = None  # Lazily created for active-vision depth.
 
   def _post_init_av_aloha(self, keyframe: str = "home"):
     """Initializes helpful robot properties (mirrors AlohaEnv post-init)."""
@@ -128,13 +129,20 @@ class AvAlohaEnv(mjx_env.MjxEnv):
     ]
     return (sum(hand_table_collisions) > 0).astype(float)
 
+  def _sync_mj_data(self, data) -> mujoco.MjData:
+    mj_data = mujoco.MjData(self._mj_model)
+    mj_data.qpos[:] = np.asarray(data.qpos)
+    mj_data.qvel[:] = np.asarray(data.qvel)
+    mujoco.mj_forward(self._mj_model, mj_data)
+    return mj_data
+
   def render_active_vision(
       self, data, width: int = 640, height: int = 480
   ) -> np.ndarray:
     """Render an RGB image from the middle-arm ZED left camera.
 
     Eval-only: not JIT-safe. Copies mjx data back to the CPU MjData and
-    runs MuJoCo's offscreen renderer.
+    runs MuJoCo's offscreen renderer. Returns uint8 (H, W, 3).
     """
     if self._renderer is None or self._renderer.height != height or (
         self._renderer.width != width
@@ -142,9 +150,28 @@ class AvAlohaEnv(mjx_env.MjxEnv):
       self._renderer = mujoco.Renderer(
           self._mj_model, height=height, width=width
       )
-    mj_data = mujoco.MjData(self._mj_model)
-    mj_data.qpos[:] = np.asarray(data.qpos)
-    mj_data.qvel[:] = np.asarray(data.qvel)
-    mujoco.mj_forward(self._mj_model, mj_data)
+    mj_data = self._sync_mj_data(data)
     self._renderer.update_scene(mj_data, camera=consts.MIDDLE_CAMERA_LEFT)
     return self._renderer.render()
+
+  def render_active_vision_depth(
+      self, data, width: int = 640, height: int = 480
+  ) -> np.ndarray:
+    """Render a metric-depth image from the middle-arm ZED left camera.
+
+    Eval-only. Returns float32 (H, W) where each pixel is depth in meters
+    along the camera's view direction. Background pixels (no hit) report
+    the model's far clip distance.
+    """
+    if (
+        self._depth_renderer is None
+        or self._depth_renderer.height != height
+        or self._depth_renderer.width != width
+    ):
+      self._depth_renderer = mujoco.Renderer(
+          self._mj_model, height=height, width=width
+      )
+      self._depth_renderer.enable_depth_rendering()
+    mj_data = self._sync_mj_data(data)
+    self._depth_renderer.update_scene(mj_data, camera=consts.MIDDLE_CAMERA_LEFT)
+    return self._depth_renderer.render()
