@@ -4,7 +4,7 @@
   <option impratio="5"/>
 
   <visual>
-    <scale contactwidth="0.075" contactheight="0.025" forcewidth="0.05"/>
+    <scale contactwidth="0.075" contactheight="0.025" forcewidth="0.05" camera="0.3"/>
   </visual>
 
   <asset>
@@ -351,8 +351,10 @@
                     <geom pos="0 0.00119254 -0.04325" quat="0 0.707107 0.707107 0" type="mesh" class="visual" mesh="zedm"/>
                     <geom pos="0 0.00119254 -0.04325" quat="0 0.707107 0.707107 0" type="mesh" class="collision" mesh="zedm"/>
                     <site name="middle/zed_camera_center" pos="0 0.00119254 -0.04325" quat="0 0.707107 0.707107 0"/>
-                    <camera name="middle/zed_cam_left" pos="0.03 0.00119254 -0.04325" euler="1.57079632679 0 3.14159265359" fovy="66.21" mode="fixed"/>
-                    <camera name="middle/zed_cam_right" pos="-0.03 0.00119254 -0.04325" euler="1.57079632679 0 3.14159265359" fovy="66.21" mode="fixed"/>
+                    <camera name="middle/zed_cam_left" pos="0.03 0.02 -0.04325" euler="1.57079632679 0 3.14159265359" mode="fixed"
+                            focal="2.8e-3 2.8e-3" resolution="1280 720" sensorsize="4800e-6 2700e-6"/>
+                    <camera name="middle/zed_cam_right" pos="-0.03 0.02 -0.04325" euler="1.57079632679 0 3.14159265359" mode="fixed"
+                            focal="2.8e-3 2.8e-3" resolution="1280 720" sensorsize="4800e-6 2700e-6"/>
                   </body>
                 </body>
               </body>
